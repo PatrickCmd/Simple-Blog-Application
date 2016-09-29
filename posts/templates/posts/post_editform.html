@@ -1,0 +1,38 @@
+{% extends "posts/base.html" %}
+{% block head_title %} Post Edit | {{ block.super }} {% endblock head_title %}
+{% load crispy_forms_tags %}
+
+{% block post_detail_link %}
+	<li><a href="{{ instance.get_absolute_url }}">{{ instance.title }}</a></li>
+	<li><a href="{{ instance.get_edit_url }}">Edit</a></li>
+{% endblock %}
+
+
+{% block head_extra %} 
+	
+	{{ form.media }}    <!-- # form for pagedown -->
+
+{% endblock head_extra %}
+
+{% block content %}	
+
+
+	<div class="col-sm-6">
+
+		<h1>Edit Post </h1>
+		
+		<form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
+			{{ form|crispy }}<!-- crispy_forms -->   <!-- {{ form.as_p }} -->
+			<input type="submit" value="Edit Post" />
+		</form>
+	</div>
+
+	<div class="col-sm-6">
+		<h1>Preview</h1>
+		<div class="content-preview">
+			<h3 id="preview-title"></h3>
+			<p id="preview-content"></p>
+		</div>
+	</div>	
+
+{% endblock content %}

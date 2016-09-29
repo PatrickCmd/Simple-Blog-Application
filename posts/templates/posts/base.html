@@ -1,0 +1,138 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset='utf-8'>
+	<title>{% block head_title %} Blog Site {% endblock head_title %} </title>
+	<!-- Latest compiled and minified CSS -->
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+
+	<!-- Optional theme -->
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"> -->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap-theme.min.css' %}">
+
+	<!-- font-awesome -->
+	<!-- <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css"> -->
+	<link rel="stylesheet" type="text/css" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+
+	<!--custom css-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+
+	{% block head_extra %}  {% endblock head_extra %}
+</head>
+<body>
+
+	<!-- Facebook comment Plugin -->
+	<div id="fb-root"></div>
+		<script>(function(d, s, id) {
+			  var js, fjs = d.getElementsByTagName(s)[0];
+			  if (d.getElementById(id)) return;
+			  js = d.createElement(s); js.id = id;
+			  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.7";
+			  fjs.parentNode.insertBefore(js, fjs);
+			}(document, 'script', 'facebook-jssdk'));
+		</script>
+
+
+	{% include "posts/messages.html" %}
+
+	<div class="container">
+
+		<ol class='breadcrumb'>
+			<li><a href="{% url 'posts:list' %}">Home</a></li>
+			<!-- <li><a href="{% url 'posts:list' %}">Posts</a></li> -->
+			{% block post_detail_link %}
+			{% endblock %}
+
+			{% if request.user.is_authenticated %}
+				<li class="pull-right"><a href="{% url 'logout' %}">Logout</a></li>				
+			{% else %}
+				<li class="pull-right"><a href="{% url 'register' %}">Register</a></li>
+				<li class="pull-right"><a href="{% url 'login' %}">Login</a></li>
+			{% endif %}
+		</ol>
+
+		{% block content %}
+
+		{% endblock content %}
+	</div>
+	
+
+	<!-- Latest compiled and minified JavaScript -->
+	<!--<script
+			  src="https://code.jquery.com/jquery-3.1.0.min.js"
+			  integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+			  crossorigin="anonymous"></script>-->
+	<script type="text/javascript" src="{% static 'js/jquery-3.1.0.min.js' %}"></script>
+	<!--script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script> -->
+	<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+
+	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script> -->
+	<script type="text/javascript" src="{% static 'js/marked.min.js' %}"></script>
+ 	
+ 	<!-- markdown -->
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".content-markdown").each(function(){
+				var content = $(this).text()
+				//console.log(content)
+				var markedContent = marked(content)
+				//console.log(markedContent)
+				$(this).html(markedContent)
+			})
+
+			$(".content-markdown img").each(function(){
+				$(this).addClass('img-responsive');
+			})
+
+			$(".page-detail-item img").each(function(){
+				$(this).addClass('img-responsive');
+			})
+
+			/******* Dynamic Preview ********/
+
+			/********* preview-title ********/
+			var titleInput = $('#id_title')
+			//$('#preview-title').text(titleItem.val())
+
+			function setTitle(value){
+				var title = value
+				$('#preview-title').text(title)
+			}
+
+			setTitle(titleInput.val())
+
+			titleInput.keyup(function(){
+				var newTitle = $(this).val()
+				setTitle(newTitle)
+			})
+
+			/********* preview content **********/
+			var contentInput = $('#id_content')
+			//$('#preview-content').html(marked(contentItem.val()))
+
+			function setContent(value){
+				var markedContent = marked(value)
+				$('#preview-content').html(markedContent)
+				$('#preview-content img').each(function(){
+					$(this).addClass('img-responsive')
+				})
+			}
+
+			setContent(contentInput.val())
+
+			contentInput.keyup(function(){
+				var newContent = $(this).val()
+				setContent(newContent)
+			})
+
+			/********** Click event for Reply Button in Post Detail Template ************/
+			$(".comment-reply-btn").click(function(event){
+				event.preventDefault();
+				$(this).parent().next(".comment-reply").fadeToggle();
+			})
+		})
+	</script>
+</body>
+</html>
